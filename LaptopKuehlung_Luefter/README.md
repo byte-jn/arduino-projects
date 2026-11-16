@@ -1,47 +1,47 @@
-# LaptopKuehlung_Luefter
+# LaptopKuehlung_Luefter (laptop cooling – fan)
 
-Schaltet einen 12-V-Lüfter über ein Relais. Die Temperatur kommt per USB von der [Brücke](../LaptopKuehlung_Bridge/), die sie über MQTT vom [Sensor](../LaptopKuehlung_Sensor/) bekommt.
+Switches a 12 V fan through a relay. The temperature arrives via USB from the [bridge](../LaptopKuehlung_Bridge/), which receives it over MQTT from the [sensor](../LaptopKuehlung_Sensor/).
 
 ## Hardware
 
-| Bauteil | Anschluss |
+| Component | Connection |
 |---|---|
-| Arduino Uno | USB am Laptop (Standard: COM3) |
-| Relais-Modul (High Level Trigger) | `IN → D3`, `VCC → 5V`, `GND → GND` |
-| 12-V-Lüfter | über den Relais-Kontakt (`COM`/`NO`) an eigene 12-V-Versorgung |
+| Arduino Uno | USB to the laptop (default: COM3) |
+| Relay module (high level trigger) | `IN → D3`, `VCC → 5V`, `GND → GND` |
+| 12 V fan | through the relay contact (`COM`/`NO`) to its own 12 V supply |
 
-Zieht das Relais bei LOW an, im Sketch `FAN_ACTIVE_LOW = true` setzen.
+If the relay pulls in on LOW, set `FAN_ACTIVE_LOW = true` in the sketch.
 
-## Hochladen
+## Upload
 
-Board **Arduino Uno**, Port **COM3**. Keine zusätzlichen Bibliotheken.
+Board **Arduino Uno**, port **COM3**. No additional libraries.
 
-## Verhalten
+## Behaviour
 
-| Situation | Lüfter |
+| Situation | Fan |
 |---|---|
-| Temperatur ≥ 23,0 °C | AN |
-| Temperatur < 22,0 °C | AUS |
-| dazwischen | bleibt, wie er ist |
-| Sensor meldet `error` oder `offline` | sofort AN (Fail-safe) |
-| 60 s keine Temperatur | AN (Fail-safe) |
+| Temperature ≥ 23.0 °C | ON |
+| Temperature < 22.0 °C | OFF |
+| in between | stays as it is |
+| Sensor reports `error` or `offline` | ON immediately (fail-safe) |
+| No temperature for 60 s | ON (fail-safe) |
 
-## Steuern
+## Control
 
-- **MQTT:** `laptop/luefter/set` mit `ON`, `OFF` oder `AUTO`
-- **Ohne Brücke:** Serial Monitor (115200 Baud, Zeilenende „Neue Zeile“): `ON`, `OFF`, `AUTO` oder `STATUS`
+- **MQTT:** `laptop/luefter/set` with `ON`, `OFF` or `AUTO`
+- **Without the bridge:** Serial Monitor (115200 baud, line ending "Newline"): `ON`, `OFF`, `AUTO` or `STATUS`
 
-Der Lüfter-Uno meldet jede Änderung (`fan`, `mode`, `failsafe`) an die Brücke. Die publiziert sie nach `laptop/luefter/...`.
+The fan Uno reports every change (`fan`, `mode`, `failsafe`) to the bridge, which publishes it to `laptop/luefter/...`.
 
-## Log (USB, 115200 Baud)
+## Log (USB, 115200 baud)
 
 ```
 6120;luefter;INFO;temp;nr=4,temp=27.3,hum=41
 6121;luefter;INFO;fan;zustand=ON,grund=temp_hoch,temp=27.3,an_ab=23.0,aus_unter=22.0
 ```
 
-Der Uno prüft Prüfsumme und laufende Nummer jedes Rahmens und meldet Fehler (`bad_frame`), Lücken (`nr_luecke`) und Duplikate.
+The Uno checks the checksum and the sequence number of every frame and reports errors (`bad_frame`), gaps (`nr_luecke`) and duplicates.
 
-## Einstellungen
+## Settings
 
-Oben im Sketch: `FAN_PIN`, `FAN_ACTIVE_LOW`, `TEMP_ON`, `TEMP_OFF`, `TEMP_TIMEOUT_MS`, `ACK_TIMEOUT_MS`, `MAX_FAILS`, `LOG_FRAMES`.
+At the top of the sketch: `FAN_PIN`, `FAN_ACTIVE_LOW`, `TEMP_ON`, `TEMP_OFF`, `TEMP_TIMEOUT_MS`, `ACK_TIMEOUT_MS`, `MAX_FAILS`, `LOG_FRAMES`.

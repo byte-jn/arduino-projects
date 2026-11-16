@@ -1,33 +1,33 @@
-# LaptopKuehlung_Sensor
+# LaptopKuehlung_Sensor (laptop cooling – sensor)
 
-Misst alle 5 s Temperatur und Luftfeuchte und schickt sie per USB an die [Brücke](../LaptopKuehlung_Bridge/). Eine LED-Ampel zeigt die Temperatur direkt am Board.
+Measures temperature and humidity every 5 s and sends them via USB to the [bridge](../LaptopKuehlung_Bridge/). An LED traffic light shows the temperature directly on the board.
 
 ## Hardware
 
-| Bauteil | Anschluss |
+| Component | Connection |
 |---|---|
-| Arduino Uno | USB am Laptop (Standard: COM7) |
-| DHT22-Modul | `+ → 5V`, `OUT → D2`, `− → GND` |
-| LED rot / gelb / grün | `D13` / `D12` / `D11`, je ca. 220 Ω, kurzes Bein an GND |
+| Arduino Uno | USB to the laptop (default: COM7) |
+| DHT22 module | `+ → 5V`, `OUT → D2`, `− → GND` |
+| LED red / yellow / green | `D13` / `D12` / `D11`, approx. 220 Ω each, short leg to GND |
 
-## Hochladen
+## Upload
 
-Board **Arduino Uno**, Port **COM7**. Bibliotheken: *DHT sensor library* und *Adafruit Unified Sensor*.
+Board **Arduino Uno**, port **COM7**. Libraries: *DHT sensor library* and *Adafruit Unified Sensor*.
 
-## Verhalten
+## Behaviour
 
-| LED | Bedeutung |
+| LED | Meaning |
 |---|---|
-| grün | ≤ 25,0 °C |
-| gelb | > 25,0 °C |
-| rot | > 26,0 °C |
-| rot blinkt | Sensorfehler |
+| green | ≤ 25.0 °C |
+| yellow | > 25.0 °C |
+| red | > 26.0 °C |
+| red blinking | Sensor error |
 
-- Jede Messung geht als Rahmen `@D|<nr>|temp=27.3&hum=41*<prüfsumme>` an die Brücke.
-- Die Brücke bestätigt erst, wenn der MQTT-Broker die Nachricht hat.
-- Nach **2 Fehlschlägen in Folge** gilt die Verbindung als `offline`: Es wird nicht mehr gesendet, bis der Uno neu startet. Messung und Ampel laufen weiter.
+- Every measurement is sent to the bridge as a frame `@D|<nr>|temp=27.3&hum=41*<checksum>`.
+- The bridge only acknowledges once the MQTT broker has the message.
+- After **2 failures in a row** the connection counts as `offline`: nothing is sent anymore until the Uno restarts. Measuring and the traffic light keep running.
 
-## Log (USB, 115200 Baud)
+## Log (USB, 115200 baud)
 
 ```
 5012;sensor;INFO;send;typ=D,nr=3,link=online
@@ -35,8 +35,8 @@ Board **Arduino Uno**, Port **COM7**. Bibliotheken: *DHT sensor library* und *Ad
 5031;sensor;INFO;measure;temp=27.3,hum=41
 ```
 
-Format: `zeit_ms;geraet;level;ereignis;details`. Jede Minute kommt eine Zusammenfassung (`stats`).
+Format: `zeit_ms;geraet;level;ereignis;details`. A summary (`stats`) follows every minute.
 
-## Einstellungen
+## Settings
 
-Oben im Sketch: Pins, Ampel-Schwellen (`WARN_TEMP`, `BAD_TEMP`), Messintervall, `ACK_TIMEOUT_MS`, `MAX_FAILS`, `LOG_FRAMES`.
+At the top of the sketch: pins, traffic-light thresholds (`WARN_TEMP`, `BAD_TEMP`), measuring interval, `ACK_TIMEOUT_MS`, `MAX_FAILS`, `LOG_FRAMES`.
