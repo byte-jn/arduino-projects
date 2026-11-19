@@ -1,181 +1,179 @@
-# Arduino Projects
+# Arduino-Projekte
 
-Folder and file names are German; the descriptions below explain what each project does.
+## Projekte
 
-## Projects
-
-| Project | Board | Description |
+| Projekt | Board | Beschreibung |
 |---|---|---|
-| [Reaction time](Reaktionszeit/Reaktionszeit.txt) | Arduino Uno (AVR) | An LED lights up randomly after 1–3 s, a button stops the timer, the result in ms is printed to the Serial Monitor. |
-| [Temperature sensor](Temperatursensor/Temperatursensor.txt) | Arduino Uno (AVR) | A DHT11 measures the temperature; traffic-light LEDs show green (up to 25 °C), yellow (above 25 °C) or red (above 26 °C). |
-| [Analog readout](AnalogeDatenauslesung/AnalogeDatenauslesung.txt) | Arduino Uno (AVR) | Reads a potentiometer on A3; three LEDs (red, yellow, blue) each show one third of the value range, the raw value goes to the Serial Monitor. |
-| [Resistance measurement](Wiederstandsmessen/Wiederstandsmessen.txt) | Arduino Uno (AVR) | Placeholder: currently only switches on the built-in LED. |
-| [LaptopKuehlung_Sensor](LaptopKuehlung_Sensor/LaptopKuehlung_Sensor.ino) | Arduino Uno (AVR) | Laptop cooling, sensor: a DHT22 measures every 5 s, LED traffic light, data goes via USB to the bridge. |
-| [LaptopKuehlung_Luefter](LaptopKuehlung_Luefter/LaptopKuehlung_Luefter.ino) | Arduino Uno (AVR) | Laptop cooling, fan: switches based on the temperature (hysteresis, fail-safe) and receives the data via USB from the bridge. |
-| [LaptopKuehlung_Bridge](LaptopKuehlung_Bridge/bridge.py) | Laptop (Python + Docker) | Laptop cooling, bridge: connects both Unos (USB) to the Mosquitto MQTT broker. |
+| [Reaktionszeit](Reaktionszeit/Reaktionszeit.txt) | Arduino Uno (AVR) | LED leuchtet nach 1–3 s zufällig auf, Taster stoppt die Zeit, Ausgabe in ms im Serial Monitor. |
+| [Temperatursensor](Temperatursensor/Temperatursensor.txt) | Arduino Uno (AVR) | DHT11 misst die Temperatur, Ampel-LEDs zeigen grün (bis 25 °C), gelb (über 25 °C) oder rot (über 26 °C). |
+| [AnalogeDatenauslesung](AnalogeDatenauslesung/AnalogeDatenauslesung.txt) | Arduino Uno (AVR) | Potentiometer an A3 wird ausgelesen, drei LEDs (rot, gelb, blau) zeigen je ein Drittel des Wertebereichs, Rohwert im Serial Monitor. |
+| [Wiederstandsmessen](Wiederstandsmessen/Wiederstandsmessen.txt) | Arduino Uno (AVR) | Platzhalter: schaltet bisher nur die eingebaute LED ein. |
+| [LaptopKuehlung_Sensor](LaptopKuehlung_Sensor/LaptopKuehlung_Sensor.ino) | Arduino Uno (AVR) | Laptop-Kühlung, Sensor: DHT22 misst alle 5 s, LED-Ampel, Daten per USB an die Brücke. |
+| [LaptopKuehlung_Luefter](LaptopKuehlung_Luefter/LaptopKuehlung_Luefter.ino) | Arduino Uno (AVR) | Laptop-Kühlung, Lüfter: schaltet anhand der Temperatur (Hysterese, Fail-safe), bekommt die Daten per USB von der Brücke. |
+| [LaptopKuehlung_Bridge](LaptopKuehlung_Bridge/bridge.py) | Laptop (Python + Docker) | Laptop-Kühlung, Brücke: verbindet beide Unos (USB) mit dem MQTT-Broker Mosquitto. |
 
 ## Dependencies
 
-### Board core
+### Board-Core
 
-| Core | Version | For | Installation |
+| Core | Version | Für | Installation |
 |---|---|---|---|
-| Arduino AVR Boards | 1.8.8 | all sketches | Included with the Arduino IDE |
+| Arduino AVR Boards | 1.8.8 | alle Sketches | Bei der Arduino IDE dabei |
 
-In the IDE, select "Arduino Uno" under **Tools → Board** and set the COM port.
+In der IDE unter **Werkzeuge → Board** „Arduino Uno“ wählen und den COM-Port setzen.
 
-### Libraries (`libraries/`)
+### Bibliotheken (`libraries/`)
 
-| Library | Version | For | Note |
+| Bibliothek | Version | Für | Hinweis |
 |---|---|---|---|
-| DHT sensor library (Adafruit) | 1.4.7 | Temperature sensor, LaptopKuehlung_Sensor | |
-| Adafruit Unified Sensor | 1.1.15 | Temperature sensor, LaptopKuehlung_Sensor | Dependency of the DHT sensor library |
+| DHT sensor library (Adafruit) | 1.4.7 | Temperatursensor, LaptopKuehlung_Sensor | |
+| Adafruit Unified Sensor | 1.1.15 | Temperatursensor, LaptopKuehlung_Sensor | Abhängigkeit der DHT sensor library |
 
-Both can be installed via **Tools → Manage Libraries**. The `libraries/` folder is excluded from the repository via `.gitignore` and has to be reinstalled on a new machine. Only these two libraries should live in `libraries/`.
+Beide sind über **Werkzeuge → Bibliotheken verwalten** installierbar. Der Ordner `libraries/` ist per `.gitignore` vom Repository ausgeschlossen und muss auf einem neuen Rechner neu installiert werden. In `libraries/` sollen nur diese zwei Bibliotheken liegen.
 
-### Laptop (for the bridge)
+### Laptop (für die Brücke)
 
-| What | Version | Installation |
+| Was | Version | Installation |
 |---|---|---|
-| Python | 3.11 (tested) | |
-| paho-mqtt, pyserial | see [requirements.txt](LaptopKuehlung_Bridge/requirements.txt) | `python -m pip install --user -r LaptopKuehlung_Bridge/requirements.txt` |
-| Docker Desktop | | for the broker `eclipse-mosquitto:2` |
+| Python | 3.11 (getestet) | |
+| paho-mqtt, pyserial | siehe [requirements.txt](LaptopKuehlung_Bridge/requirements.txt) | `python -m pip install --user -r LaptopKuehlung_Bridge/requirements.txt` |
+| Docker Desktop | | für den Broker `eclipse-mosquitto:2` |
 
-## Laptop cooling
+## Laptop-Kühlung
 
-The Uno has no Wi-Fi, so both Unos are connected to the laptop via USB. The bridge (`bridge.py`) reads both USB ports and talks to the MQTT broker. The Unos are connected only through MQTT, not directly.
+Der Uno hat kein WLAN. Beide Unos hängen deshalb per USB am Laptop. Die Brücke (`bridge.py`) liest beide USB-Ports und spricht mit dem MQTT-Broker. Die Unos sind nur über MQTT verbunden, nicht direkt.
 
 ```
-Sensor Uno (COM7) ──USB──┐                              ┌──USB── Fan Uno (COM3)
-  DHT22 + traffic light  ▼                              ▼          Relay + 12 V fan
+Sensor-Uno (COM7) ──USB──┐                              ┌──USB── Lüfter-Uno (COM3)
+  DHT22 + Ampel          ▼                              ▼          Relais + 12-V-Lüfter
                     bridge.py  ◄──── MQTT ────►  Mosquitto (Docker, 127.0.0.1:1883)
                          │
-                         └──► Console + CSV (LaptopKuehlung_Bridge/logs/) + laptop/log
+                         └──► Konsole + CSV (LaptopKuehlung_Bridge/logs/) + laptop/log
 ```
 
-Flow of one measurement:
+Ablauf einer Messung:
 
-1. The sensor Uno sends `@D|12|temp=27.3&hum=41*..` via USB.
-2. The bridge publishes `laptop/temperatur` and only **then** acknowledges to the sensor Uno with `@A|12|*..`. If the broker cannot keep up, it replies `@N|12|grund=mqtt_offline*..`.
-3. The bridge receives `laptop/temperatur` back from the broker and sends `@T|..|temp=27.3&hum=41*..` to the fan Uno.
-4. The fan Uno acknowledges, regulates and reports its state (`@S|..|fan=ON&mode=AUTO&failsafe=0*..`). The bridge publishes it to `laptop/luefter/...`.
+1. Der Sensor-Uno schickt `@D|12|temp=27.3&hum=41*..` per USB.
+2. Die Brücke publiziert `laptop/temperatur` und bestätigt dem Sensor-Uno erst **danach** mit `@A|12|*..`. Kommt der Broker nicht nach, gibt es `@N|12|grund=mqtt_offline*..`.
+3. Die Brücke bekommt `laptop/temperatur` vom Broker zurück und schickt `@T|..|temp=27.3&hum=41*..` an den Lüfter-Uno.
+4. Der Lüfter-Uno bestätigt, regelt und meldet seinen Zustand (`@S|..|fan=ON&mode=AUTO&failsafe=0*..`). Die Brücke publiziert ihn nach `laptop/luefter/...`.
 
-### Getting started
+### Starten
 
-1. Start Docker Desktop, then the broker:
+1. Docker Desktop starten, dann den Broker:
    ```bash
    docker compose -f LaptopKuehlung_Bridge/docker-compose.yml up -d
    ```
-2. Upload `LaptopKuehlung_Sensor` to the Uno on **COM7** and `LaptopKuehlung_Luefter` to the Uno on **COM3**.
-3. Close the Arduino IDE, or at least the Serial Monitor (a port can only be opened by one program at a time).
-4. Start the bridge (defaults: sensor COM7, fan COM3, broker 127.0.0.1:1883):
+2. `LaptopKuehlung_Sensor` auf den Uno an **COM7** laden, `LaptopKuehlung_Luefter` auf den Uno an **COM3**.
+3. Arduino IDE schließen bzw. Serial Monitor zu (ein Port kann nur von einem Programm geöffnet werden).
+4. Brücke starten (Standard: Sensor COM7, Lüfter COM3, Broker 127.0.0.1:1883):
    ```bash
    python LaptopKuehlung_Bridge/bridge.py
    ```
-   Other ports: `--sensor COM8 --luefter COM5`. Raw frames on the console: `--debug`. Stop with Ctrl+C.
+   Andere Ports: `--sensor COM8 --luefter COM5`. Rohe Rahmen auf der Konsole: `--debug`. Beenden mit Strg+C.
 
-When the ports are opened, the bridge restarts both Unos; they then report their boot information.
+Beim Öffnen der Ports startet die Brücke beide Unos neu, sie melden sich dann mit ihren Boot-Infos.
 
-### Bridge start-up diagnostics
+### Start-Diagnose der Brücke
 
-On start-up the bridge logs:
+Die Brücke loggt beim Start:
 
-| Event | Content |
+| Ereignis | Inhalt |
 |---|---|
-| `bridge_start` | Version, Python, system, log folder |
-| `wlan_verbunden` | Adapter, state, SSID, band, channel, signal, authentication |
-| `wlan_verfuegbar` | Every visible Wi-Fi network with band, signal, authentication |
-| `wlan_ziel` | Broker address and whether Wi-Fi is needed to reach it |
-| `com_port`, `com_zuordnung` | All COM ports (description, USB ID, serial number) and whether the ports for sensor and fan are present |
-| `mqtt_connect`, `broker_erreichbar` | Broker address, TCP test with response time |
-| `abbruch` | Broker unreachable after **2 attempts**: the bridge exits (exit code 2) |
+| `bridge_start` | Version, Python, System, Log-Ordner |
+| `wlan_verbunden` | Adapter, Status, SSID, Band, Kanal, Signal, Anmeldung |
+| `wlan_verfuegbar` | jedes sichtbare WLAN mit Band, Signal, Anmeldung |
+| `wlan_ziel` | Broker-Adresse und ob dafür WLAN nötig ist |
+| `com_port`, `com_zuordnung` | alle COM-Ports (Beschreibung, USB-ID, Seriennummer) und ob die Ports für Sensor und Lüfter da sind |
+| `mqtt_connect`, `broker_erreichbar` | Broker-Adresse, TCP-Test mit Antwortzeit |
+| `abbruch` | Broker nach **2 Versuchen** nicht erreichbar: die Brücke beendet sich (Exit-Code 2) |
 
-A busy COM port (e.g. an open Serial Monitor) does not abort: the bridge reports `port_unavailable` and retries every 5 s.
+Ein belegter COM-Port (z. B. Serial Monitor offen) bricht nicht ab: Die Brücke meldet `port_unavailable` und versucht es alle 5 s erneut.
 
-### Wiring
+### Verdrahtung
 
-**Sensor Uno (COM7):**
+**Sensor-Uno (COM7):**
 
-| Component | Connection |
+| Bauteil | Anschluss |
 |---|---|
-| DHT22 module | `+ → 5V`, `OUT → D2`, `− → GND` (bare 4-pin sensor: 10 kΩ from DATA to 5V) |
-| LED red / yellow / green | `D13` / `D12` / `D11`, approx. 220 Ω each, short leg to GND |
+| DHT22-Modul | `+ → 5V`, `OUT → D2`, `− → GND` (nackter 4-Pin-Sensor: 10 kΩ von DATA nach 5V) |
+| LED rot / gelb / grün | `D13` / `D12` / `D11`, je ca. 220 Ω, kurzes Bein an GND |
 
-| LED | Meaning |
+| LED | Bedeutung |
 |---|---|
-| green | Temperature ≤ 25.0 °C |
-| yellow | Temperature > 25.0 °C |
-| red | Temperature > 26.0 °C |
-| red blinking | Sensor error (DHT22 returns no value) |
+| grün | Temperatur ≤ 25,0 °C |
+| gelb | Temperatur > 25,0 °C |
+| rot | Temperatur > 26,0 °C |
+| rot blinkt | Sensorfehler (DHT22 liefert keinen Wert) |
 
-**Fan Uno (COM3):**
+**Lüfter-Uno (COM3):**
 
-| Component | Connection |
+| Bauteil | Anschluss |
 |---|---|
-| Relay module (high level trigger) | `IN → D3`, `VCC → 5V`, `GND → GND` |
-| 12 V fan | through the relay contact (`COM`/`NO`) to its own 12 V supply |
+| Relais-Modul (High Level Trigger) | `IN → D3`, `VCC → 5V`, `GND → GND` |
+| 12-V-Lüfter | über den Relais-Kontakt (`COM`/`NO`) an eine eigene 12-V-Versorgung |
 
-If the relay switches on LOW ("low level trigger"), set `FAN_ACTIVE_LOW = true` in the sketch. There are **no** wires between the two Unos.
+Schaltet das Relais bei LOW („Low Level Trigger“), im Sketch `FAN_ACTIVE_LOW = true` setzen. Zwischen den beiden Unos gibt es **keine** Kabel.
 
-### Messages over USB
+### Nachrichten über USB
 
-Each USB line (115200 baud) carries log lines and data frames mixed together. Data frames start with `@`:
+Auf jeder USB-Leitung (115200 Baud) laufen Log-Zeilen und Datenrahmen gemischt. Datenrahmen beginnen mit `@`:
 
 ```
 @<TYP>|<NR>|<key=wert&key=wert>*<PRUEFSUMME>
 ```
 
-| Part | Meaning |
+| Teil | Bedeutung |
 |---|---|
-| `TYP` (type) | `H` hello, `D` data, `S` status/state, `T` temperature, `C` command, `A` acknowledgement, `N` rejection |
-| `NR` (number) | Sequence number 1–65535 per sender; `A`/`N` repeat the number of the message they answer |
-| `PRUEFSUMME` (checksum) | XOR of all characters between `@` and `*`, two hex digits |
+| `TYP` | `H` Hallo, `D` Daten, `S` Status/Zustand, `T` Temperatur, `C` Befehl, `A` Bestätigung, `N` Ablehnung |
+| `NR` | laufende Nummer 1–65535 je Absender; `A`/`N` wiederholen die Nummer der beantworteten Nachricht |
+| `PRUEFSUMME` | XOR aller Zeichen zwischen `@` und `*`, zwei Hex-Ziffern |
 
-| Direction | Frames |
+| Richtung | Rahmen |
 |---|---|
-| Sensor → bridge | `H` (dev=sensor), `D` (temp, hum), `S` (sensor=ok/error) |
-| Bridge → sensor | `A`, `N` (grund=mqtt_offline, checksum, …) |
-| Bridge → fan | `H` (dev=bridge), `T` (temp, hum), `S` (sensor=ok/error/offline), `C` (mode=ON/OFF/AUTO) |
-| Fan → bridge | `H` (dev=luefter), `S` (fan, mode, failsafe), `A`, `N` |
+| Sensor → Brücke | `H` (dev=sensor), `D` (temp, hum), `S` (sensor=ok/error) |
+| Brücke → Sensor | `A`, `N` (grund=mqtt_offline, checksum, …) |
+| Brücke → Lüfter | `H` (dev=bridge), `T` (temp, hum), `S` (sensor=ok/error/offline), `C` (mode=ON/OFF/AUTO) |
+| Lüfter → Brücke | `H` (dev=luefter), `S` (fan, mode, failsafe), `A`, `N` |
 
-The fan Uno checks the bridge's sequence numbers and reports gaps (`nr_luecke`) and duplicates.
+Der Lüfter-Uno prüft die laufenden Nummern der Brücke und meldet Lücken (`nr_luecke`) und Duplikate.
 
-### MQTT topics
+### MQTT-Topics
 
-| Topic | From | Content |
+| Topic | Von | Inhalt |
 |---|---|---|
-| `laptop/temperatur` | Bridge (sensor) | Temperature in °C, e.g. `27.3` (retained) |
-| `laptop/luftfeuchte` | Bridge (sensor) | Humidity in % (retained) |
-| `laptop/sensor/status` | Bridge (sensor) | `ok`, `error` or `offline` (sensor Uno port gone) (retained) |
-| `laptop/luefter/set` | you | `ON`, `OFF` or `AUTO` |
-| `laptop/luefter/status` | Bridge (fan) | `ON` / `OFF` (retained) |
-| `laptop/luefter/mode` | Bridge (fan) | `AUTO` / `ON` / `OFF` (retained) |
-| `laptop/luefter/failsafe` | Bridge (fan) | `ON` / `OFF` (retained) |
-| `laptop/sensor/stats`, `laptop/luefter/stats` | Bridge | Summary as JSON, every minute |
-| `laptop/bridge/status` | Bridge | `online` / `offline` (last will) |
-| `laptop/log` | Bridge | Every log line as JSON |
+| `laptop/temperatur` | Brücke (Sensor) | Temperatur in °C, z. B. `27.3` (retained) |
+| `laptop/luftfeuchte` | Brücke (Sensor) | Luftfeuchte in % (retained) |
+| `laptop/sensor/status` | Brücke (Sensor) | `ok`, `error` oder `offline` (Sensor-Uno-Port weg) (retained) |
+| `laptop/luefter/set` | du | `ON`, `OFF` oder `AUTO` |
+| `laptop/luefter/status` | Brücke (Lüfter) | `ON` / `OFF` (retained) |
+| `laptop/luefter/mode` | Brücke (Lüfter) | `AUTO` / `ON` / `OFF` (retained) |
+| `laptop/luefter/failsafe` | Brücke (Lüfter) | `ON` / `OFF` (retained) |
+| `laptop/sensor/stats`, `laptop/luefter/stats` | Brücke | Zusammenfassung als JSON, jede Minute |
+| `laptop/bridge/status` | Brücke | `online` / `offline` (Last Will) |
+| `laptop/log` | Brücke | jede Log-Zeile als JSON |
 
-On start-up the bridge does not forward old (retained) temperatures to the fan, otherwise the fan would treat them as current.
+Alte (retained) Temperaturen gibt die Brücke beim Start nicht an den Lüfter weiter, sonst hielte er sie für aktuell.
 
-### Fan behaviour
+### Verhalten des Lüfters
 
-- **AUTO** (default): ON from `TEMP_ON` (23.0 °C), OFF below `TEMP_OFF` (22.0 °C). In between, the state stays as it is.
-- **Fail-safe**, the fan turns ON:
-  - immediately on sensor status `error` or `offline`,
-  - when no temperature arrives for 60 s (bridge or sensor gone).
-- **MQTT:** `laptop/luefter/set` with `ON`, `OFF` or `AUTO`. Without the bridge, type `ON`, `OFF`, `AUTO` or `STATUS` into the Serial Monitor (115200 baud).
+- **AUTO** (Standard): AN ab `TEMP_ON` (23,0 °C), AUS unter `TEMP_OFF` (22,0 °C). Dazwischen bleibt der Zustand.
+- **Fail-safe**, der Lüfter geht AN:
+  - sofort bei Sensorstatus `error` oder `offline`,
+  - wenn 60 s keine Temperatur kommt (Brücke oder Sensor weg).
+- **MQTT:** `laptop/luefter/set` mit `ON`, `OFF` oder `AUTO`. Ohne Brücke im Serial Monitor (115200 Baud) `ON`, `OFF`, `AUTO` oder `STATUS` eintippen.
 
-Thresholds and timings are at the top of the sketch under "Einstellungen" (settings).
+Schwellen und Zeiten stehen oben im Sketch unter „Einstellungen“.
 
 ### Logging
 
-All three parts log in the same format:
+Alle drei Teile loggen im gleichen Format:
 
 ```
 zeit_ms;geraet;level;ereignis;key=wert,key=wert
 ```
 
-`level` is `DEBUG` (raw frames), `INFO`, `WARN` or `ERROR`. The bridge prepends date and time and writes everything to `LaptopKuehlung_Bridge/logs/laptopkuehlung_<datum>.csv` (columns `datum;zeit_ms;geraet;level;ereignis;details`). Example:
+`level` ist `DEBUG` (rohe Rahmen), `INFO`, `WARN` oder `ERROR`. Die Brücke setzt Datum und Uhrzeit davor und schreibt alles nach `LaptopKuehlung_Bridge/logs/laptopkuehlung_<datum>.csv` (Spalten `datum;zeit_ms;geraet;level;ereignis;details`). Beispiel:
 
 ```
 2026-11-11 12:50:05;5012;sensor;INFO;send;typ=D,nr=3,link=online
@@ -186,20 +184,20 @@ zeit_ms;geraet;level;ereignis;key=wert,key=wert
 2026-11-11 12:50:05;6121;luefter;INFO;fan;zustand=ON,grund=temp_hoch,temp=27.3,an_ab=23.0,aus_unter=22.0
 ```
 
-**Sending with status:** The sensor Uno and the fan Uno log the connection status before each send (`send`) and the result afterwards (`send_ok`, `send_nak`, `send_timeout`, `send_skipped`):
+**Senden mit Status:** Sensor-Uno und Lüfter-Uno loggen bei jedem Senden den Verbindungsstatus vorher (`send`) und das Ergebnis nachher (`send_ok`, `send_nak`, `send_timeout`, `send_skipped`):
 
-| Connection status | Meaning |
+| Verbindungsstatus | Bedeutung |
 |---|---|
-| `unbekannt` (unknown) | right after start-up |
-| `online` | the last message was acknowledged |
-| `unsicher` (uncertain) | the last attempt failed, retrying |
-| `offline` | 2 failures in a row: **no more sending** (`send_skipped`) until the Uno restarts. If the bridge restarts, it resets the Unos automatically. |
+| `unbekannt` | direkt nach dem Start |
+| `online` | letzte Nachricht wurde bestätigt |
+| `unsicher` | letzter Versuch fehlgeschlagen, es wird weiter versucht |
+| `offline` | 2 Fehlschläge in Folge: es wird **nicht mehr gesendet** (`send_skipped`), bis der Uno neu startet. Startet die Brücke neu, setzt sie die Unos automatisch zurück. |
 
-Every minute all Unos write a summary (`stats`): sent, acknowledged, timeouts, rejected, skipped, gaps, duplicates, fan state, last temperature.
+Jede Minute schreiben alle Unos eine Zusammenfassung (`stats`): gesendet, bestätigt, Timeouts, abgelehnt, übersprungen, Lücken, Duplikate, Lüfterzustand, letzte Temperatur.
 
-### Testing without the sensor
+### Test ohne Sensor
 
-Run only the broker, the bridge and the fan Uno, and publish values yourself (inside the broker container):
+Nur Broker, Brücke und Lüfter-Uno laufen lassen und Werte selbst publizieren (im Broker-Container):
 
 ```bash
 docker exec laptopkuehlung-mosquitto mosquitto_pub -t laptop/temperatur -m 27.5
